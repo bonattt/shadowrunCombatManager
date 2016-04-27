@@ -114,6 +114,7 @@ class Combat():
         ls = []
         for combatant in self.combatants:
             ls.append(combatant.as_list())
+        return ls
 
 
 def get_fastest(ls_combantants):

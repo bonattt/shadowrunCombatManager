@@ -204,7 +204,7 @@ class SaveCommand():
         except Exception:
             raise ConsoleCommandException("save failed: unknown error")
 
-        print("successfully saved \"", args[0], "\"")
+        print("successfully saved \"" + args[0] + "\"")
 
 
 class LoadCommand():
@@ -228,7 +228,7 @@ class LoadCommand():
             raise e
         except Exception:
             raise ConsoleCommandException("load file failed: unknown error")
-        print("successfully loaded \"", args[0], "\"")
+        print("successfully loaded \"" + args[0] + "\"")
 
 
 def verify_json_data(json_data):
