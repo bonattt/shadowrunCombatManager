@@ -1,5 +1,6 @@
 import sys
 import json
+import os.path
 from dis import code_info
 from random import randint
 from combat import Combat
@@ -11,6 +12,9 @@ class RollCommand():
 
     def __init__(self):
         pass
+
+    def help(self):
+        print("TODO")
 
     def execute(self, args):
         if len(args) == 1:
@@ -26,6 +30,9 @@ class NewCombat():
 
     def __init__(self, console):
         self.console = console
+
+    def help(self):
+        print("TODO")
 
     def execute(self, args):
         if len(args) != 0:
@@ -47,6 +54,9 @@ class AddCombatant():
     def __init__(self, console):
         self.console = console
 
+    def help(self):
+        print("TODO")
+
     def execute(self, args):
         if len(args) != 3:
             print("add [name] [base init] [init dice]")
@@ -63,6 +73,9 @@ class ViewCommand():
 
     def __init__(self, console):
         self.console = console
+
+    def help(self):
+        print("TODO")
 
     def execute(self, arg):
         view_combatants(self.console)
@@ -83,6 +96,9 @@ class RemoveCombatant():
     def __init__(self, console):
         self.console = console
 
+    def help(self):
+        print("TODO")
+
     def execute(self, args):
         if len(args) != 1:
             raise ConsoleCommandException("remove [combatant name]")
@@ -98,6 +114,9 @@ class NextCombatant():
 
     def __init__(self, console):
         self.console = console
+
+    def help(self):
+        print("TODO")
 
     def execute(self, args):
         if self.console.combat is None:
@@ -119,6 +138,9 @@ class DamageCombatant():
     def __init__(self, console):
         self.console = console
 
+    def help(self):
+        print("TODO")
+
     def execute(self, args):
         if self.console is None:
             raise ConsoleCommandException("there is no active combat")
@@ -134,6 +156,9 @@ class HealCommand():
 
     def __init__(self, console):
         self.console = console
+
+    def help(self):
+        print("TODO")
 
     def execute(self, args):
         if self.console.combat is None:
@@ -151,6 +176,9 @@ class ResetInitCommand():
     def __init__(self, console):
         self.console = console
 
+    def help(self):
+        print("TODO")
+
     def execute(self, args):
         if self.console.combat is None:
             raise ConsoleCommandException("there is no active combat")
@@ -167,14 +195,20 @@ class ClearCommand():
     def __init__(self):
         pass
 
+    def help(self):
+        print("clears the console screen")
+
     def execute(self, args):
-        print("\n"*21)
+        print("\n"*50)
 
 
 class RemoveCombatant():
 
     def __init__(self, console):
         self.console = console
+
+    def help(self):
+        print("TODO")
 
     def execute(self, args):
         if self.console.combat is None:
@@ -192,6 +226,10 @@ class SaveCommand():
     def __init__(self, console):
         self.console = console
 
+    def help(self):
+        print("\tsave [save name]:\nsaves the current game to the current name. If the name is already used" +
+              " this will ask before overwriting it. Save names cannot include spaces.")
+
     def execute(self, args):
         if self.console.combat is None:
             raise ConsoleCommandException("there is no active combat")
@@ -199,12 +237,21 @@ class SaveCommand():
         if len(args) != 1:
             raise ConsoleCommandException("save [save name]")
         try:
-            with open("save_files/" + args[0] + ".json", "w") as outfile:
-                json.dumps(self.console.combat.as_list(), outfile)
-        except Exception:
-            raise ConsoleCommandException("save failed: unknown error")
+            self.__saveFile__(args[0])
+            print("successfully saved \"" + args[0] + "\"")
+        except IOError as e:
+            raise ConsoleCommandException("\tsave failed\nIOError: \"" + str(e) + "\"")
+        except Exception as e:
+            raise e
+            # raise ConsoleCommandException("\tsave failed\nunknown error: \"" + str(e) +"\"")
 
-        print("successfully saved \"" + args[0] + "\"")
+    def __saveFile__(self, save_name):
+        save_path = "save_files/" + save_name + ".json"
+        outfile = open(save_path, "w")
+        if os.path.isfile(save_path):
+            if not confirm("This save name is already used, would you like to overwrite it? [y/n]"):
+                raise ConsoleCommandException("game not saved.")
+        json.dump(self.console.combat.as_list(), outfile)
 
 
 class LoadCommand():
@@ -212,9 +259,14 @@ class LoadCommand():
     def __init__(self, console):
         self.console = console
 
+    def help(self):
+        print("\tload [save name]:\nloads a previously saved game. If a game is currently loaded," +
+              " this will ask before overwriting it. Save names cannot include spaces.")
+
     def execute(self, args):
         if len(args) != 1:
-            raise ConsoleCommandException("load [file name]")
+            raise ConsoleCommandException("load [save name]. Please note, save names cannot contain spaces." +
+                                          " Try using \"_\" or \"-\" instead ")
 
         if self.console.combat is not None:
             if not confirm("Loading a new combat will overwrite your current combat. Is that okay? [y/n]"):
@@ -229,6 +281,32 @@ class LoadCommand():
         except Exception:
             raise ConsoleCommandException("load file failed: unknown error")
         print("successfully loaded \"" + args[0] + "\"")
+
+
+class HelpCommand():
+
+    def __init__(self, console):
+        self.console = console
+
+    def help(self):
+        print("\thelp\nPrints a list of availible commands")
+        print("\thelp [command]:\nGives instructions for the use of the selected command.")
+
+    def execute(self, args):
+        if len(args) == 0:
+            print("available commands")
+            for command in self.console.commands:
+                print(command)
+
+        elif len(args) == 1:
+            if args[0] in self.console.commands:
+                self.console.commands[args[0]].help()
+            else:
+                raise ConsoleCommandException("help: command not found")
+
+
+        else:
+            raise ConsoleCommandException("help [command] for info on specific command")
 
 
 def verify_json_data(json_data):

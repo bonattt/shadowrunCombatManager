@@ -29,6 +29,7 @@ def add_default_commands(console):
     console.commands["remove"] = cmd.RemoveCombatant(console)
     console.commands["save"] = cmd.SaveCommand(console)
     console.commands["load"] = cmd.LoadCommand(console)
+    console.commands["help"] = cmd.HelpCommand(console)
 
 
 
