@@ -41,10 +41,11 @@ class AboutCommand():
 
 
 def print_about_statement():
-    print("This software was produced by Thomas Bonatti")
-    print("this software may be freely used, distributed, and modified by anyone, it is 100% open source.")
+    print("Johnson's Little Helper version 1.0")
+    print("Johnson's Little Helper was produced by Thomas Bonatti")
+    print("This software may be freely used, distributed, and modified by anyone, it is 100% open source.")
     print("This software is intended to be used to an aid for managing in the tabletop RPG Shadowrun, 5th ed.,"
-          " by Catalyst Game Labs, however if you find another use for the game, I'd be happy to hear about it")
+          " by Catalyst Game Labs.")
 
 
 class NewCombat():
