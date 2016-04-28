@@ -1,0 +1,7 @@
+    Version 1.0 - Features:
+- so this is the first release, technically I haven't "patched" anything
+- track combat initiative for multiple "Combatants"
+- track both physical  and stun damage on multiple combatants (doesn't tell you when they die, just tracks total damage taken)
+- convenient dice rolling command allows you to make rolls that are secret from your players.
+- combats can be saved and loaded as json files. The filepath is hardcoded into the "save_files" directory within the program folder
+- there's a handy dandy "about" command that pulls up a little info and an email to address your fanmail (it's secretly just a junk folder, don't tell anyone)

@@ -1,10 +1,17 @@
+"""
+Johnson's Little Helper Version 1.0
+Created by Thomas Bonatti
+April 2016
+"""
 
 from console import Console
 import commands as cmd
 
 
 def start_console():
-    print("Welcome to the Shadowrun Combat Manager\n\t- IllumiBonatti")
+    print("Welcome to the Shadowrun Combat Manager")
+    print("type \"exit\" to close. Type \"help\" for a list of commands for for details on a specific command")
+    print()
     console = Console()
     add_default_commands(console)
     console.run_console()

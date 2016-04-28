@@ -1,3 +1,9 @@
+"""
+Johnson's Little Helper Version 1.0
+Created by Thomas Bonatti
+April 2016
+"""
+
 import sys
 import json
 import os.path
@@ -46,6 +52,8 @@ def print_about_statement():
     print("This software may be freely used, distributed, and modified by anyone, it is 100% open source.")
     print("This software is intended to be used to an aid for managing in the tabletop RPG Shadowrun, 5th ed.,"
           " by Catalyst Game Labs.")
+    print("If you find bugs, want to contribute add-ons to the code, have questions, or suggestions, email me at kings_of_ahevrayka@hotmail.com")
+    print("I also have several MS-Excell spreadsheets I've made to help bookkeeping for shadowrun character creation, if your interested, email me.")
 
 
 class NewCombat():

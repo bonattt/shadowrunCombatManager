@@ -1,3 +1,8 @@
+"""
+Johnson's Little Helper Version 1.0
+Created by Thomas Bonatti
+April 2016
+"""
 
 class Console():
 
@@ -9,7 +14,7 @@ class Console():
 
     def run_console(self):
         while True:
-            choices = (str(input(self.DEFAULT_MSG + "> "))).split(" ")
+            choices = self.get_input()
             print()
             if choices[0].lower() == "exit":
                 return
@@ -18,6 +23,11 @@ class Console():
             else:
                 print("command not found")
             print()
+
+    def get_input(self):
+        choice = str(input(self.DEFAULT_MSG + "> "))
+        choice = choice.strip(" ")
+        return choice.split(" ")
 
     def handle_choice(self, choices):
         command = self.commands[choices[0]]

@@ -1,3 +1,9 @@
+"""
+Johnson's Little Helper Version 1.0
+Created by Thomas Bonatti
+April 2016
+"""
+
 from random import randint
 from console import ConsoleCommandException
 
