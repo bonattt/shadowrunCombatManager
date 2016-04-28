@@ -2,15 +2,13 @@
 from console import Console
 import commands as cmd
 
-def main():
-    start_console()
-
 
 def start_console():
     print("Welcome to the Shadowrun Combat Manager\n\t- IllumiBonatti")
     console = Console()
     add_default_commands(console)
     console.run_console()
+
 
 def add_default_commands(console):
     console.commands["roll"] = cmd.RollCommand()
@@ -26,13 +24,18 @@ def add_default_commands(console):
     console.commands["reset"] = reset_cmd
     console.commands["reset-init"] = reset_cmd
     console.commands["clear"] = cmd.ClearCommand()
-    console.commands["remove"] = cmd.RemoveCombatant(console)
+    remove_cmd = cmd.RemoveCombatant(console)
+    console.commands["remove"] = remove_cmd
+    console.commands["remove-combatant"] = remove_cmd
     console.commands["save"] = cmd.SaveCommand(console)
     console.commands["load"] = cmd.LoadCommand(console)
     console.commands["help"] = cmd.HelpCommand(console)
+    console.commands["stun"] = cmd.StunCommand(console)
+    console.commands["stun-heal"] = cmd.HealStunCommand(console)
+    console.commands["about"] = cmd.AboutCommand()
 
 
 
 
 if __name__ == "__main__":
-    main()
+    start_console()

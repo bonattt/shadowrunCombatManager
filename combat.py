@@ -166,5 +166,11 @@ class Combatant():
     def change_init(self, change):
         self.init = max(self.init + change, 0)
 
+    def change_damage(self, change):
+        self.damage = max(self.damage + change, 0)
+
+    def change_stun(self, change):
+        self.stun = max(self.stun + change, 0)
+
     def __str__(self):
         return self.get_str()

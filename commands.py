@@ -14,7 +14,9 @@ class RollCommand():
         pass
 
     def help(self):
-        print("TODO")
+        print("\troll [dice pool] [optional: limit]")
+        print("This command rolls a number of dice equal to "
+              "the dice pool, then displays the result.")
 
     def execute(self, args):
         if len(args) == 1:
@@ -26,13 +28,34 @@ class RollCommand():
             print("makes a roll with the given dice pool and limit")
 
 
+class AboutCommand():
+
+    def __init__(self):
+        pass
+
+    def help(self):
+        print_about_statement()
+
+    def execute(self, args):
+        print_about_statement()
+
+
+def print_about_statement():
+    print("This software was produced by Thomas Bonatti")
+    print("this software may be freely used, distributed, and modified by anyone, it is 100% open source.")
+    print("This software is intended to be used to an aid for managing in the tabletop RPG Shadowrun, 5th ed.,"
+          " by Catalyst Game Labs, however if you find another use for the game, I'd be happy to hear about it")
+
+
 class NewCombat():
 
     def __init__(self, console):
         self.console = console
 
     def help(self):
-        print("TODO")
+        print("\tnew:\nThis command launches a new empty combat."
+              "If there is already a combat running, this command"
+              " asks before overwriting it.")
 
     def execute(self, args):
         if len(args) != 0:
@@ -43,7 +66,7 @@ class NewCombat():
             self.new_combat()
 
     def new_combat(self):
-        if self.console.combat == None:
+        if self.console.combat is None:
             self.console.combat = Combat()
         elif confirm("you have an active combat. Would you like to overwrite it with a new one? [y/n]"):
             self.console.combat = Combat()
@@ -55,7 +78,9 @@ class AddCombatant():
         self.console = console
 
     def help(self):
-        print("TODO")
+        print("\tadd [name] [base init] [init dice]:\nAdds a new combatant with" +
+              " the given name, base initiative, and initiative dice." +
+              "Names must be unique.")
 
     def execute(self, args):
         if len(args) != 3:
@@ -75,7 +100,7 @@ class ViewCommand():
         self.console = console
 
     def help(self):
-        print("TODO")
+        print("\tview\nDisplays the current initiative order without changing it.")
 
     def execute(self, arg):
         view_combatants(self.console)
@@ -97,7 +122,7 @@ class RemoveCombatant():
         self.console = console
 
     def help(self):
-        print("TODO")
+        print("\tremove-combatant [name]:\nremoves the selected combatant from the turn order.")
 
     def execute(self, args):
         if len(args) != 1:
@@ -110,13 +135,14 @@ class RemoveCombatant():
             print("removed " + args[0] + " from the combat")
             self.console.combat.remove(args[0])
 
+
 class NextCombatant():
 
     def __init__(self, console):
         self.console = console
 
     def help(self):
-        print("TODO")
+        print("\tnext:\ndisplays the next combatant(s) to take their turn(s) and displays the initiative order.")
 
     def execute(self, args):
         if self.console.combat is None:
@@ -139,7 +165,7 @@ class DamageCombatant():
         self.console = console
 
     def help(self):
-        print("TODO")
+        print("\tdamage [name] [amount]:\ndeals the specified amount of damage from the target combatant")
 
     def execute(self, args):
         if self.console is None:
@@ -149,7 +175,7 @@ class DamageCombatant():
             raise ConsoleCommandException("damage [name] [damage]")
 
         combatant = self.console.combat.get(args[0])
-        combatant.damage += int(args[1])
+        combatant.change_damage(int(args[1]))
 
 
 class HealCommand():
@@ -158,7 +184,7 @@ class HealCommand():
         self.console = console
 
     def help(self):
-        print("TODO")
+        print("\theal [name] [amount]:\nheals the specified amount of damage from the target combatant")
 
     def execute(self, args):
         if self.console.combat is None:
@@ -168,7 +194,46 @@ class HealCommand():
             raise ConsoleCommandException("heal [name] [damage]")
 
         combatant = self.console.combat.get(args[0])
-        combatant.damage -= int(args[1])
+        combatant.change_damage(-int(args[1]))
+
+
+class StunCommand():
+
+    def __init__(self, console):
+        self.console = console
+
+    def help(self):
+        print("\tstun [name] [amount]:\ndeals the specified amount of stun-damage from the target combatant")
+
+    def execute(self, args):
+        if self.console.combat is None:
+            raise ConsoleCommandException("there is no active combat")
+
+        if len(args) != 2:
+            raise ConsoleCommandException("heal [name] [damage]")
+
+        combatant = self.console.combat.get(args[0])
+        combatant.change_stun(int(args[1]))
+
+
+class HealStunCommand():
+
+    def __init__(self, console):
+        self.console = console
+
+    def help(self):
+        print("\tstun-heal [name] [amount]:\nheals the specified amount of stun-damage from the target combatant")
+
+    def execute(self, args):
+        if self.console.combat is None:
+            raise ConsoleCommandException("there is no active combat")
+
+        if len(args) != 2:
+            raise ConsoleCommandException("heal [name] [damage]")
+
+        combatant = self.console.combat.get(args[0])
+        combatant.change_stun(-int(args[1]))
+
 
 
 class ResetInitCommand():
@@ -177,7 +242,7 @@ class ResetInitCommand():
         self.console = console
 
     def help(self):
-        print("TODO")
+        print("\treset-init:\nthis rerolls immediately starts a new combat turn")
 
     def execute(self, args):
         if self.console.combat is None:
@@ -196,7 +261,7 @@ class ClearCommand():
         pass
 
     def help(self):
-        print("clears the console screen")
+        print("\tclear:\nclears the console screen")
 
     def execute(self, args):
         print("\n"*50)
@@ -208,7 +273,7 @@ class RemoveCombatant():
         self.console = console
 
     def help(self):
-        print("TODO")
+        print("\tremove-combatant [name]:\nthis command removes the named combatant from the combat")
 
     def execute(self, args):
         if self.console.combat is None:
