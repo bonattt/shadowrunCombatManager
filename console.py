@@ -6,11 +6,10 @@ class Console():
     def __init__(self):
         self.combat = None
         self.commands = {}
-        self.msg = self.DEFAULT_MSG
 
     def run_console(self):
         while True:
-            choices = (str(input(self.msg + "> "))).split(" ")
+            choices = (str(input(self.DEFAULT_MSG + "> "))).split(" ")
             print()
             if choices[0].lower() == "exit":
                 return
@@ -27,12 +26,6 @@ class Console():
             command.execute(args)
         except ConsoleCommandException as e:
             print(e.msg)
-
-    def reset_msg(self):
-        if self.combat == None:
-            self.msg = self.DEFAULT_MSG
-        else:
-            self.msg = self.DEFAULT_MSG + self.combat.getName()
 
 
 class ConsoleCommandException(Exception):
