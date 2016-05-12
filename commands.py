@@ -20,9 +20,9 @@ class RollCommand():
         pass
 
     def help(self):
-        print("\troll [dice pool] [optional: limit]")
-        print("This command rolls a number of dice equal to "
-              "the dice pool, then displays the result.")
+        print('\troll [dice pool] [optional: limit]')
+        print('This command rolls a number of dice equal to '
+              'the dice pool, then displays the result.')
 
     def execute(self, args):
         if len(args) == 1:
@@ -30,8 +30,8 @@ class RollCommand():
         elif len(args) == 2:
             limited_roll(int(args[0]), int(args[1]))
         else:
-            print("roll [dice pool] [limit (default = 9223372036854775807)]")
-            print("makes a roll with the given dice pool and limit")
+            print('roll [dice pool] [limit (default = 9223372036854775807)]')
+            print('makes a roll with the given dice pool and limit')
 
 
 class AboutCommand():
@@ -49,11 +49,73 @@ class AboutCommand():
 def print_about_statement():
     print("Johnson's Little Helper version 1.0")
     print("Johnson's Little Helper was produced by Thomas Bonatti")
-    print("This software may be freely used, distributed, and modified by anyone, it is 100% open source.")
-    print("This software is intended to be used to an aid for managing in the tabletop RPG Shadowrun, 5th ed.,"
-          " by Catalyst Game Labs.")
-    print("If you find bugs, want to contribute add-ons to the code, have questions, or suggestions, email me at kings_of_ahevrayka@hotmail.com")
+    print('This software may be freely used, distributed, and modified by anyone, it is 100% open source.')
+    print('This software is intended to be used to an aid for managing in the tabletop RPG Shadowrun, 5th ed.,'
+          ' by Catalyst Game Labs.')
+    print('If you find bugs, want to contribute add-ons to the code, have questions, or suggestions, email me at kings_of_ahevrayka@hotmail.com')
     print("I also have several MS-Excell spreadsheets I've made to help bookkeeping for shadowrun character creation, if your interested, email me.")
+
+
+class SetBaseInitCommand:
+
+    def __init__(self, console):
+        self.console = console
+
+    def help(self):
+        raise ConsoleCommandException('help undefined for this command')
+
+    def execute(self, args):
+        if len(args) != 2:
+            raise ConsoleCommandException('base-init [name] [new-init]')
+
+        target = self.console.combat.contains_name(args[0])
+        if not target:
+            raise ConsoleCommandException('that combatant does not exist')
+
+        target.set_base_init(int(args[1]))
+        self.console.combat.sort()
+        return True
+
+class ShockInitCommands:
+
+    def __init__(self, console):
+        self.console = console
+
+    def help(self):
+        raise ConsoleCommandException('help undefined for this command')
+
+    def execute(self, args):
+        if len(args) != 2:
+            raise ConsoleCommandException('shock-init [name] [change]')
+
+        target = self.console.combat.contains_name(args[0])
+        if not target:
+            raise ConsoleCommandException('that combatant does not exist')
+
+        target.change_init(int(args[1]))
+        self.console.combat.sort()
+        return True
+
+
+class ChangeInitDiceCommand:
+
+    def __init__(self, console):
+        self.console = console
+
+    def help(self):
+        raise ConsoleCommandException('help undefined for this command')
+
+    def execute(self, args):
+        if len(args) != 2:
+            raise ConsoleCommandException('init-dice [name] [change]')
+
+        target = self.console.combat.contains_name(args[0])
+        if not target:
+            raise ConsoleCommandException('that combatant does not exist')
+
+        target.change_init_dice(int(args[1]))
+        self.console.combat.sort()
+        return True
 
 
 class NewCombat():
@@ -62,8 +124,8 @@ class NewCombat():
         self.console = console
 
     def help(self):
-        print("\tnew:\nThis command launches a new empty combat."
-              "If there is already a combat running, this command"
+        print('\tnew:\nThis command launches a new empty combat.'
+              'If there is already a combat running, this command'
               " asks before overwriting it.")
 
     def execute(self, args):
@@ -73,6 +135,7 @@ class NewCombat():
         else:
             print("initiated a new combat")
             self.new_combat()
+            return True
 
     def new_combat(self):
         if self.console.combat is None:
@@ -93,14 +156,15 @@ class AddCombatant():
 
     def execute(self, args):
         if len(args) != 3:
-            print("add [name] [base init] [init dice]")
-            print("add adds a new combatant to your active combat")
+            raise ConsoleCommandException('add [name] [base init] [init dice]')
+            raise ConsoleCommandException('add adds a new combatant to your active combat')
         else:
             if self.console.combat == None:
-                print("there is no active combat to add combatants to")
+                raise ConsoleCommandException('there is no active combat to add combatants to')
             else:
                 self.console.combat.add(args[0], args[1], args[2])
                 print("added " + args[0] + " to the initiative order")
+                return True
 
 
 class ViewCommand():
@@ -112,17 +176,18 @@ class ViewCommand():
         print("\tview\nDisplays the current initiative order without changing it.")
 
     def execute(self, arg):
-        view_combatants(self.console)
+        return True
 
 
-def view_combatants(console):
-    if console.combat == None:
-        print("there is no active combat to view")
-    elif len(console.combat.combatants) == 0:
-        print("the combat is empty")
-    else:
-        for combatant in console.combat.combatants:
-            print(combatant)
+# def view_combatants(console):
+#     if console.combat == None:
+#         print("there is no active combat to view")
+#     elif len(console.combat.combatants) == 0:
+#         print("the combat is empty")
+#     else:
+#         print("Current Turn: " + str(console.combat.currentTurn))
+#         for combatant in console.combat.combatants:
+#             print(combatant)
 
 
 class RemoveCombatant():
@@ -144,6 +209,8 @@ class RemoveCombatant():
             print("removed " + args[0] + " from the combat")
             self.console.combat.remove(args[0])
 
+        return True
+
 
 class NextCombatant():
 
@@ -161,11 +228,11 @@ class NextCombatant():
             raise ConsoleCommandException("next takes no args")
 
         next_turn = self.console.combat.next()
-        msg = "Turn: "
-        for combatant in next_turn:
-            msg += combatant.name + " "
-        print(msg)
-        view_combatants(self.console)
+        # msg = "Turn: "
+        # for combatant in next_turn:
+        #     msg += combatant.name + " "
+        # print(msg)
+        return True
 
 
 class DamageCombatant():
@@ -244,7 +311,6 @@ class HealStunCommand():
         combatant.change_stun(-int(args[1]))
 
 
-
 class ResetInitCommand():
 
     def __init__(self, console):
@@ -262,6 +328,7 @@ class ResetInitCommand():
 
         self.console.combat.reroll_init()
         print("reset the initiative order")
+        return True
 
 
 class ClearCommand():
@@ -293,6 +360,7 @@ class RemoveCombatant():
 
         self.console.combat.remove(args[0])
         print("removed", args[0], "from the combat")
+        return True
 
 
 class SaveCommand():
@@ -355,6 +423,7 @@ class LoadCommand():
         except Exception:
             raise ConsoleCommandException("load file failed: unknown error")
         print("successfully loaded \"" + args[0] + "\"")
+        return True
 
 
 class HelpCommand():
@@ -383,6 +452,17 @@ class HelpCommand():
             raise ConsoleCommandException("help [command] for info on specific command")
 
 
+class DeleteCommand():
+
+    def execute(self, args):
+        if len(args) != 1:
+            raise ConsoleCommandException('delete <save name>')
+        try:
+            os.remove('save_files/' + args[0] + '.json')
+        except FileNotFoundError:
+            raise ConsoleCommandException("save '" + args[0] + "' does not exist")
+
+
 def verify_json_data(json_data):
     try:
         for sub_list in json_data:
@@ -391,12 +471,12 @@ def verify_json_data(json_data):
             if len(sub_list) > 3:
                 raise Exception()
     except Exception:
-        raise ConsoleCommandException("load file failed: json data in unexpected form")
+        raise ConsoleCommandException('load file failed: json data in unexpected form')
 
 
 def confirm(msg):
     choice = str(input(msg))
-    if choice.startswith("y"):
+    if choice.startswith('y'):
         return True
     return False
 
@@ -417,16 +497,16 @@ def limited_roll(dice_pool, limit):
             hits += 1
         rolls.append(roll)
     if hits > limit:
-        print("hit limit!")
+        print('hit limit!')
         hits = limit
     print_roll(rolls, ones, hits, dice_pool)
 
 def print_roll(rolls, ones, hits, dice_pool):
     if ones > int(dice_pool / 2):
         if hits == 0:
-            print("CRITICAL GLITCH")
+            print('CRITICAL GLITCH')
         else:
-            print("GLITCH!")
+            print('GLITCH!')
     print(rolls)
-    print("hits: ", hits, "ones: ", ones, "sum:", sum(rolls))
+    print('hits: ', hits, 'ones: ', ones, 'sum:', sum(rolls))
 

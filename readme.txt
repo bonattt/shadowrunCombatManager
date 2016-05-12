@@ -9,6 +9,7 @@ Thomas Bonatti
 Johnson's Little Helper is written in Python 3, you'll need to have that installed to run this.
 If you don't have Python, Google "Install Python 3", it's pretty easy to figure out. (No one's paying me to do this,
 don't expect me to hold you hand :D)
+Make sure you get python 3. For whatever reason, people use both python 2 & 3, and this program won't work on python 2.
 
     2) Unzip the folder
 Unzip the program to wherever you want it.

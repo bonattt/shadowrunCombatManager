@@ -20,11 +20,12 @@ class Combat():
 
     def __init__(self):
         self.combatants = []
+        self.currentTurn = None
 
     def contains_name(self, name):
         for current in self.combatants:
             if current.name == name:
-                return True
+                return current
 
         return False
 
@@ -53,7 +54,15 @@ class Combat():
         elif self.init_pass_over():
             self.next_init_pass()
 
+        # self.currentTurn = str(return_val).replace('[', '').replace(']', '')
+        self.set_current_turn(return_val)
         return return_val
+
+    def set_current_turn(self, return_val):
+        msg = ''
+        for entry in return_val:
+            msg += entry.name + ' '
+        self.currentTurn = msg
 
     def get_next_combatant(self):
         if len(self.combatants) == 0:
@@ -79,6 +88,7 @@ class Combat():
     def reroll_init(self):
         for current in self.combatants:
             current.roll_init()
+            current.has_acted = False
         self.sort_by_init()
 
     def init_pass_over(self):
@@ -92,10 +102,6 @@ class Combat():
         for combatant in self.combatants:
             if combatant.init > 0:
                 combatant.has_acted = False
-
-    def reduce_init(self, name, init):
-        target = self.get(name)
-        target.change_init(-init)
 
     def get_current(self):
         return self.combatants[0]
@@ -121,6 +127,32 @@ class Combat():
         for combatant in self.combatants:
             ls.append(combatant.as_list())
         return ls
+
+    def sort(self):
+        have_acted = get_have_acted(self.combatants, True)
+        not_acted = get_have_acted(self.combatants, False)
+        self.combatants = sort_by_initiaitve(not_acted) + sort_by_initiaitve(have_acted)
+
+
+def get_have_acted(ls, have_acted=True):
+    return_val = []
+    for combatant in ls:
+        if combatant.has_acted == have_acted:
+            return_val.append(combatant)
+    return return_val
+
+
+def sort_by_initiaitve(ls):
+    new_order = []
+    while ls: # while not empty
+        fastest = ls[0]
+        for combatant in ls:
+            if combatant.init > fastest.init:
+                fastest = combatant
+        new_order.append(fastest)
+        ls.remove(fastest)
+    return new_order
+
 
 
 def get_fastest(ls_combantants):
@@ -171,6 +203,40 @@ class Combatant():
 
     def change_init(self, change):
         self.init = max(self.init + change, 0)
+        if self.init == 0:
+            self.has_acted = True
+
+    def set_base_init(self, new_init):
+        delta = new_init - self.init_bonus
+        self.change_init(delta)
+        self.init_bonus = new_init
+
+    def change_init_dice(self, change):
+        if change > 0:
+            return self.increase_init_dice(change)
+        elif change < 0:
+            return self.reduce_init_dice(change)
+        return False
+
+    def increase_init_dice(self, change):
+        if (self.init_dice + change) > 5:
+            if not input('WARNING: this will increase initiative dice above the limit of 5. Proceed? [y/n]\n').startswith('y'):
+               raise ConsoleCommandException('initiative dice were not changed')
+        self.init_dice += change
+        for k in range(change):
+            self.change_init(randint(1, 6))
+
+    def reduce_init_dice(self, change):
+        if (self.init_dice + change) == 0:
+            if not input('WARNING: this will reduce initiative dice to 0, which is invalid. Proceed? [y/n]\n').startswith('y'):
+               raise ConsoleCommandException('initiative dice were not changed')
+        if (self.init_dice + change) < 0:
+            raise ConsoleCommandException('you may not reduce initiative dice below 0')
+        self.init_dice += change
+
+        for k in range(-change):
+            self.change_init(-randint(1, 6))
+
 
     def change_damage(self, change):
         self.damage = max(self.damage + change, 0)

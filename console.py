@@ -19,10 +19,21 @@ class Console():
             if choices[0].lower() == "exit":
                 return
             if choices[0] in self.commands:
-                self.handle_choice(choices)
+                if self.handle_choice(choices):
+                    self.view_combatants()
             else:
                 print("command not found")
             print()
+
+    def view_combatants(self):
+        if self.combat == None:
+            print("there is no active combat to view")
+        elif len(self.combat.combatants) == 0:
+            print("the combat is empty")
+        else:
+            print("Current Turn: " + str(self.combat.currentTurn))
+            for combatant in self.combat.combatants:
+                print(combatant)
 
     def get_input(self):
         choice = str(input(self.DEFAULT_MSG + "> "))
@@ -33,9 +44,10 @@ class Console():
         command = self.commands[choices[0]]
         args = choices[1:]
         try:
-            command.execute(args)
+            return command.execute(args)
         except ConsoleCommandException as e:
             print(e.msg)
+            return False
 
 
 class ConsoleCommandException(Exception):

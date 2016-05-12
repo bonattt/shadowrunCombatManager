@@ -41,6 +41,20 @@ def add_default_commands(console):
     console.commands["stun-heal"] = cmd.HealStunCommand(console)
     console.commands["about"] = cmd.AboutCommand()
 
+    # update 1.1
+    console.commands["delete"] = cmd.DeleteCommand()
+
+    shock_init_cmd = cmd.ShockInitCommands(console)
+    console.commands["shock-init"] = shock_init_cmd
+    console.commands["shock"] = shock_init_cmd
+
+    console.commands["base-init"] = cmd.SetBaseInitCommand(console)
+
+    init_dice_cmd = cmd.ChangeInitDiceCommand(console)
+    console.commands["init-dice"] = init_dice_cmd
+    console.commands["dice"]  = init_dice_cmd
+
+
 
 
 
