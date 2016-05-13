@@ -7,6 +7,7 @@ April 2016
 import sys
 import json
 import os.path
+import os
 from dis import code_info
 from random import randint
 from combat import Combat
@@ -389,10 +390,16 @@ class SaveCommand():
 
     def __saveFile__(self, save_name):
         save_path = "save_files/" + save_name + ".json"
+        is_file = os.path.isfile(save_path)
         outfile = open(save_path, "w")
-        if os.path.isfile(save_path):
+        if is_file:
             if not confirm("This save name is already used, would you like to overwrite it? [y/n]"):
                 raise ConsoleCommandException("game not saved.")
+        else:
+            file = open('save_files/save-index', 'a')
+            file.write('\n' + save_name)
+            file.close()
+
         json.dump(self.console.combat.as_list(), outfile)
 
 
@@ -424,6 +431,34 @@ class LoadCommand():
             raise ConsoleCommandException("load file failed: unknown error")
         print("successfully loaded \"" + args[0] + "\"")
         return True
+
+
+class LoadAppendCommand:
+
+    def __init__(self, console):
+        self.console = console
+
+    def help(self):
+        print("\tappend-load [save name]:\nloads a previously saved game. If a game is currently loaded, this command" +
+              " will add all combatants from the new combat to the currently loaded combat, instead of overwriting it.")
+
+    def execute(self, args):
+        if len(args) != 1:
+            raise ConsoleCommandException('append-load [save name]. Make sure the save you are trying to load exists.')
+
+
+class SaveNamesCommand:
+
+    def help(self):
+        print("this command lists the names of all existing saves.")
+
+    def execute(self, args):
+        # files = os.path.listdir()
+        # print(files)
+        file = open('save_files/save-index', 'r')
+        save_names = file.read()
+        print(save_names)
+        file.close()
 
 
 class HelpCommand():
@@ -459,8 +494,20 @@ class DeleteCommand():
             raise ConsoleCommandException('delete <save name>')
         try:
             os.remove('save_files/' + args[0] + '.json')
+            remove_from_file_index(args[0])
+            print("successfully deleted save '" + args[0] + "'")
         except FileNotFoundError:
             raise ConsoleCommandException("save '" + args[0] + "' does not exist")
+
+
+def remove_from_file_index(file_name):
+    file = open('save_files/save-index', 'r')
+    file_text = file.read()
+    file.close()
+    file_text = file_text.replace(file_name, '').strip().replace('\n\n', '\n')
+    file = open('save_files/save-index', 'w')
+    file.write(file_text)
+    file.close()
 
 
 def verify_json_data(json_data):

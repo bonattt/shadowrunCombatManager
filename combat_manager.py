@@ -43,13 +43,12 @@ def add_default_commands(console):
 
     # update 1.1
     console.commands["delete"] = cmd.DeleteCommand()
+    console.commands["save-names"] = cmd.SaveNamesCommand()
 
     shock_init_cmd = cmd.ShockInitCommands(console)
     console.commands["shock-init"] = shock_init_cmd
     console.commands["shock"] = shock_init_cmd
-
     console.commands["base-init"] = cmd.SetBaseInitCommand(console)
-
     init_dice_cmd = cmd.ChangeInitDiceCommand(console)
     console.commands["init-dice"] = init_dice_cmd
     console.commands["dice"]  = init_dice_cmd
