@@ -1,3 +1,10 @@
+    Version 1.1 - Features:
+- Commands for changing current initiative, changing initiative dice, and setting base initiative
+- command to list all save files
+- command to delete save files
+- command the append-load command that allows you to load a file and append it to your current combat instead of
+    overwritting it.
+
     Version 1.0 - Features:
 - so this is the first release, technically I haven't "patched" anything
 - track combat initiative for multiple "Combatants"

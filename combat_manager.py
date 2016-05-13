@@ -53,6 +53,8 @@ def add_default_commands(console):
     console.commands["init-dice"] = init_dice_cmd
     console.commands["dice"]  = init_dice_cmd
 
+    console.commands["load-append"] = cmd.LoadAppendCommand(console)
+
 
 
 

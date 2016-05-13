@@ -7,13 +7,14 @@ April 2016
 from random import randint
 from console import ConsoleCommandException
 
+def build_new_combat_from_json_list(json_list):
+    return build_combat_from_json_list(Combat(), json_list)
 
-def build_combat_from_json_list(json_list):
+def build_combat_from_json_list(combat, json_list):
 
-    cmbt = Combat()
     for sub_list in json_list:
-        cmbt.add(sub_list[0], sub_list[1], sub_list[2])
-    return cmbt
+        combat.add(sub_list[0], sub_list[1], sub_list[2])
+    return combat
 
 
 class Combat():

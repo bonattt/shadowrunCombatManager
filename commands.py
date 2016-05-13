@@ -13,6 +13,7 @@ from random import randint
 from combat import Combat
 from console import ConsoleCommandException
 from combat import build_combat_from_json_list
+from combat import build_new_combat_from_json_list
 
 
 class RollCommand():
@@ -424,7 +425,7 @@ class LoadCommand():
             with open("save_files/" + args[0] + ".json", "r") as file:
                 data = json.load(file)
                 verify_json_data(data)
-                self.console.combat = build_combat_from_json_list(data)
+                self.console.combat = build_new_combat_from_json_list(data)
         except ConsoleCommandException as e:
             raise e
         except Exception:
@@ -445,6 +446,18 @@ class LoadAppendCommand:
     def execute(self, args):
         if len(args) != 1:
             raise ConsoleCommandException('append-load [save name]. Make sure the save you are trying to load exists.')
+
+        try:
+            with open("save_files/" + args[0] + ".json", "r") as file:
+                data = json.load(file)
+                verify_json_data(data)
+                self.console.combat = build_combat_from_json_list(self.console.combat, data)
+        except ConsoleCommandException as e:
+            raise e
+        except Exception:
+            raise ConsoleCommandException("load file failed: unknown error")
+        print("successfully loaded \"" + args[0] + "\"")
+        return True
 
 
 class SaveNamesCommand:
