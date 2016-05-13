@@ -1,4 +1,6 @@
     Version 1.1 - Features:
+- fixed a bug where the "reset" command did not clear combatants having acted
+- made it so the combat is displayed after most commands that change the state of the combat in any way.
 - Commands for changing current initiative, changing initiative dice, and setting base initiative
 - command to list all save files
 - command to delete save files
